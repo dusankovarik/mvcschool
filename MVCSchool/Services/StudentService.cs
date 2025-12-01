@@ -1,0 +1,64 @@
+﻿using Microsoft.EntityFrameworkCore;
+using MVCSchool.DTO;
+using MVCSchool.Models;
+
+namespace MVCSchool.Services {
+    public class StudentService {
+        private ApplicationDbContext _dbContext;
+
+        public StudentService(ApplicationDbContext dbContext) {
+            _dbContext = dbContext;
+        }
+
+        public async Task<IEnumerable<StudentDTO>> GetAllAsync() {
+            var allStudents = await _dbContext.Students.ToListAsync();
+            var studentDtos = new List<StudentDTO>();
+            foreach (var student in allStudents) {
+                studentDtos.Add(ModelToDto(student));
+            }
+            return studentDtos;
+        }
+
+        public async Task CreateAsync(StudentDTO newStudent) {
+            await _dbContext.Students.AddAsync(DtoToModel(newStudent));
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<StudentDTO?> GetByIdAsync(int id) {
+            var student = await _dbContext.Students.FirstOrDefaultAsync(st => st.Id == id);
+            return student != null ? ModelToDto(student) : null;
+        }
+
+        public async Task UpdateAsync(StudentDTO updatedStudent) {
+            _dbContext.Students.Update(DtoToModel(updatedStudent));
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id) {
+            var studentToDelete = await _dbContext.Students.FirstOrDefaultAsync(st => st.Id == id);
+            if (studentToDelete == null) {
+                return;
+            }
+            _dbContext.Students.Remove(studentToDelete);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        private StudentDTO ModelToDto(Student student) {
+            return new StudentDTO {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                DateOfBirth = student.DateOfBirth
+            };
+        }
+
+        private Student DtoToModel(StudentDTO studentDto) {
+            return new Student {
+                Id = studentDto.Id,
+                FirstName = studentDto.FirstName,
+                LastName = studentDto.LastName,
+                DateOfBirth = studentDto.DateOfBirth
+            };
+        }
+    }
+}
