@@ -1,5 +1,24 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<div>
+    <h4>Create a new grade</h4>
+    <form asp-action="Create">
+        <div>
+            <label class="control-label"></label>
+            <select class="form-control"></select>
+        </div>
+        <div>
+            <label class="control-label"></label>
+            <select class="form-control"></select>
+        </div>
+        <div>
+            <label></label>
+            <input type="text" placeholder="What was examined" class="form-control" />
+        </div>
+        <div>
+            <label></label>
+            <input type="number" min="1" max="5" placeholder="Mark" class="form-control" />
+        </div>
+        <div>
+            <input class="btn btn-success" type="submit" value="Create" />
+        </div>
+    </form>
+</div>
