@@ -8,8 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SchoolDbConnection")));
-builder.Services.AddScoped<StudentService>();
-builder.Services.AddScoped<SubjectService>();
+builder.Services.AddScoped<StudentsService>();
+builder.Services.AddScoped<SubjecstService>();
+builder.Services.AddScoped<GradesService>();
 
 var app = builder.Build();
 

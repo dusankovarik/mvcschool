@@ -4,9 +4,9 @@ using MVCSchool.Services;
 
 namespace MVCSchool.Controllers {
     public class SubjectsController : Controller {
-        private SubjectService _service;
+        private SubjecstService _service;
 
-        public SubjectsController(SubjectService service) {
+        public SubjectsController(SubjecstService service) {
             _service = service;
         }
 

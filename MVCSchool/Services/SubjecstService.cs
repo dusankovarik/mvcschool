@@ -3,10 +3,10 @@ using MVCSchool.DTO;
 using MVCSchool.Models;
 
 namespace MVCSchool.Services {
-    public class SubjectService {
+    public class SubjecstService {
         private ApplicationDbContext _dbContext;
 
-        public SubjectService(ApplicationDbContext dbContext) {
+        public SubjecstService(ApplicationDbContext dbContext) {
             _dbContext = dbContext;
         }
 
