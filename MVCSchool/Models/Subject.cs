@@ -1,6 +1,10 @@
-﻿namespace MVCSchool.Models {
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MVCSchool.Models {
     public class Subject {
         public int Id { get; set; }
-        public string? Name { get; set; }
+
+        [Required]
+        public required string Name { get; set; }
     }
 }
