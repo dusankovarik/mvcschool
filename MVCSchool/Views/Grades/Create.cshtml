@@ -1,24 +1,26 @@
-﻿<div>
-    <h4>Create a new grade</h4>
-    <form asp-action="Create">
-        <div>
-            <label class="control-label"></label>
-            <select class="form-control"></select>
-        </div>
-        <div>
-            <label class="control-label"></label>
-            <select class="form-control"></select>
-        </div>
-        <div>
-            <label></label>
-            <input type="text" placeholder="What was examined" class="form-control" />
-        </div>
-        <div>
-            <label></label>
-            <input type="number" min="1" max="5" placeholder="Mark" class="form-control" />
-        </div>
-        <div>
-            <input class="btn btn-success" type="submit" value="Create" />
-        </div>
-    </form>
-</div>
+﻿@using MVCSchool.DTO
+
+@model GradeDTO
+
+<h4>Create a new grade</h4>
+<form asp-action="Create">
+    <div>
+        <label asp-for="StudentId" class="control-label"></label>
+        <select asp-for="StudentId" class="form-control" asp-items="ViewBag.Students"></select>
+    </div>
+    <div>
+        <label asp-for="SubjectId" class="control-label"></label>
+        <select asp-for="SubjectId" class="form-control" asp-items="ViewBag.Subjects"></select>
+    </div>
+    <div>
+        <label asp-for="Topic"></label>
+        <input type="text" asp-for="Topic" class="form-control" />
+    </div>
+    <div>
+        <label asp-for="Mark"></label>
+        <input type="number" asp-for="Mark" min="1" max="5" class="form-control" />
+    </div>
+    <div>
+        <input class="btn btn-success" type="submit" value="Create" />
+    </div>
+</form>

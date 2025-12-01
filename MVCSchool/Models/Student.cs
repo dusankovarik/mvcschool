@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MVCSchool.Models {
     public class Student {
@@ -11,5 +12,8 @@ namespace MVCSchool.Models {
         public required string LastName { get; set; }
 
         public DateOnly DateOfBirth { get; set; }
+
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName}";
     }
 }
