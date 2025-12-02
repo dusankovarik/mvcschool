@@ -11,7 +11,7 @@ namespace MVCSchool.Services {
             _dbContext = dbContext;
         }
 
-        public async Task<GradesDropdownsViewModel> GetNewGradeDropdownsValuesAsync() {
+        public async Task<GradesDropdownsViewModel> GetGradeDropdownsValuesAsync() {
             var gradeDropdownsData = new GradesDropdownsViewModel() {
                 Students = await _dbContext.Students.OrderBy(st => st.LastName).ToListAsync(),
                 Subjects = await _dbContext.Subjects.OrderBy(sub => sub.Name).ToListAsync(),
@@ -28,12 +28,33 @@ namespace MVCSchool.Services {
         }
 
         public async Task<IEnumerable<GradeDTO>> GetAllAsync() {
-            List<Grade> grades = await _dbContext.Grades.Include(gr => gr.Student).Include(gr => gr.Subject).ToListAsync();
+            List<Grade> grades = await _dbContext.Grades.Include(gr => gr.Student).Include(gr => gr.Subject)
+                .ToListAsync();
             List<GradeDTO> gradeDtos = new List<GradeDTO>();
             foreach (var grade in grades) {
                 gradeDtos.Add(ModelToDto(grade));
             }
             return gradeDtos;
+        }
+
+        public async Task<GradeDTO?> GetByIdAsync(int id) {
+            var grade = await _dbContext.Grades.Include(gr => gr.Student).Include(gr => gr.Subject)
+                .FirstOrDefaultAsync(gr => gr.Id == id);
+            return grade != null ? ModelToDto(grade) : null;
+        }
+
+        public async Task UpdateAsync(GradeDTO updatedGrade) {
+            _dbContext.Grades.Update(DtoToModel(updatedGrade));
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id) {
+            var gradeToDelete = await _dbContext.Grades.FirstOrDefaultAsync(gr => gr.Id == id);
+            if (gradeToDelete == null) {
+                return;
+            }
+            _dbContext.Grades.Remove(gradeToDelete);
+            await _dbContext.SaveChangesAsync();
         }
 
         private Grade DtoToModel(GradeDTO gradeDto) {
