@@ -11,8 +11,9 @@ namespace MVCSchool.Controllers {
             _service = service;
         }
 
-        public IActionResult Index() {
-            return View();
+        public async Task<IActionResult> IndexAsync() {
+            var allGrades = await _service.GetAllAsync();
+            return View(allGrades);
         }
 
         public async Task<IActionResult> CreateAsync() {

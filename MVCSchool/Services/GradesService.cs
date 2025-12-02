@@ -27,6 +27,15 @@ namespace MVCSchool.Services {
             }
         }
 
+        public async Task<IEnumerable<GradeDTO>> GetAllAsync() {
+            List<Grade> grades = await _dbContext.Grades.Include(gr => gr.Student).Include(gr => gr.Subject).ToListAsync();
+            List<GradeDTO> gradeDtos = new List<GradeDTO>();
+            foreach (var grade in grades) {
+                gradeDtos.Add(ModelToDto(grade));
+            }
+            return gradeDtos;
+        }
+
         private Grade DtoToModel(GradeDTO gradeDto) {
             var student = _dbContext.Students.FirstOrDefault(st => st.Id == gradeDto.StudentId);
             var subject = _dbContext.Subjects.FirstOrDefault(sub => sub.Id == gradeDto.SubjectId);
@@ -39,6 +48,19 @@ namespace MVCSchool.Services {
                 Date = DateTime.Now,
                 Topic = gradeDto.Topic,
                 Mark = gradeDto.Mark,
+            };
+        }
+
+        private GradeDTO ModelToDto(Grade grade) {
+            return new GradeDTO {
+                Id = grade.Id,
+                StudentId = grade.Student.Id,
+                SubjectId = grade.Subject.Id,
+                Topic = grade.Topic,
+                Mark = grade.Mark,
+                Date = grade.Date,
+                StudentFullName = $"{grade.Student.FirstName} {grade.Student.LastName}",
+                SubjectName = grade.Subject.Name,
             };
         }
     }
