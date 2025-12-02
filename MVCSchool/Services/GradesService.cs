@@ -64,6 +64,7 @@ namespace MVCSchool.Services {
                 return null!;
             }
             return new Grade {
+                Id = gradeDto.Id,
                 Student = student,
                 Subject = subject,
                 Date = DateTime.Now,

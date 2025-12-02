@@ -29,7 +29,7 @@ namespace MVCSchool.Controllers {
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Edit(int id) {
+        public async Task<IActionResult> EditAsync(int id) {
             var gradeToEdit = await _service.GetByIdAsync(id);
             if (gradeToEdit == null) {
                 return View("NotFound");
@@ -48,6 +48,10 @@ namespace MVCSchool.Controllers {
 
         [HttpPost]
         public async Task<IActionResult> DeleteAsync(int id) {
+            var gradeToDelete = await _service.GetByIdAsync(id);
+            if (gradeToDelete == null) {
+                return View("NotFound");
+            }
             await _service.DeleteAsync(id);
             return RedirectToAction("Index");
         }
