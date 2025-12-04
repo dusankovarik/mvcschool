@@ -4,9 +4,17 @@
 
 <h4>Update a subject</h4>
 <form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="Name"></label>
         <input type="text" asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <input class="btn btn-success" type="submit" value="Edit" />
 </form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

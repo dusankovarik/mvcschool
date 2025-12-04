@@ -21,8 +21,11 @@ namespace MVCSchool.Controllers {
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync(StudentDTO newStudent) {
-            await _service.CreateAsync(newStudent);
-            return RedirectToAction("Index");
+            if (ModelState.IsValid) {
+                await _service.CreateAsync(newStudent);
+                return RedirectToAction("Index"); 
+            }
+            return View();
         }
 
         public async Task<IActionResult> EditAsync(int id) {
