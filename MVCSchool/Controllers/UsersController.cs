@@ -66,6 +66,18 @@ namespace MVCSchool.Controllers {
                 return View(userVm);
             }
             var passwordValidation = await _passwordValidator.ValidateAsync(_userManager, user, userVm.Password);
+            if (!passwordValidation.Succeeded) {
+                AddErrors(passwordValidation);
+                return View(userVm);
+            }
+            user.Email = userVm.Email;
+            user.PasswordHash = _passwordHasher.HashPassword(user, userVm.Password);
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded) {
+                return RedirectToAction("Index");
+            }
+            AddErrors(result);
+            return View(userVm);
         }
 
         private void AddErrors(IdentityResult result) {
