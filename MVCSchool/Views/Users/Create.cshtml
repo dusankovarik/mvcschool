@@ -6,7 +6,7 @@
     ViewData["Title"] = "CREATE USER";
 }
 
-<h1>Create User</h1>
+<h1>Create a new user</h1>
 <a asp-action="Index" class="btn btn-secondary">Back</a>
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -18,12 +18,12 @@
     </div>
     <div>
         <label asp-for="Email"></label>
-        <input asp-for="Email" type="email" class="form-control" />
+        <input type="email" asp-for="Email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
     <div>
         <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control" />
+        <input type="password" asp-for="Password" class="form-control" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Create</button>
