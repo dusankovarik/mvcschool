@@ -7,10 +7,15 @@ namespace MVCSchool.Controllers {
     public class UsersController : Controller {
         private UserManager<AppUser> _userManager;
         private IPasswordHasher<AppUser> _passwordHasher;
+        private IPasswordValidator<AppUser> _passwordValidator;
 
-        public UsersController(UserManager<AppUser> userManager, IPasswordHasher<AppUser> passwordHasher) {
+        public UsersController(
+            UserManager<AppUser> userManager,
+            IPasswordHasher<AppUser> passwordHasher,
+            IPasswordValidator<AppUser> passwordValidator) {
             _userManager = userManager;
             _passwordHasher = passwordHasher;
+            _passwordValidator = passwordValidator;
         }
 
         public IActionResult Index() {
@@ -39,37 +44,28 @@ namespace MVCSchool.Controllers {
 
         public async Task<IActionResult> EditAsync(string id) {
             AppUser? userToEdit = await _userManager.FindByIdAsync(id);
-            return userToEdit != null ? View(userToEdit) : View("NotFound");
+            if (userToEdit == null) {
+                return View("NotFound");
+            }
+            var userToEditVM = new EditUserViewModel {
+                Id = userToEdit.Id,
+                Name = userToEdit.UserName!,
+                Email = userToEdit.Email!,
+            };
+            return View(userToEditVM);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditAsync(string id, string email, string password) {
-            AppUser? user = await _userManager.FindByIdAsync(id);
-            if (user != null) {
-                if (!string.IsNullOrEmpty(email)) {
-                    user.Email = email;
-                }
-                else {
-                    ModelState.AddModelError("", "Email cannot be empty.");
-                }
-                if (!string.IsNullOrEmpty(password)) {
-                    user.PasswordHash = _passwordHasher.HashPassword(user, password);
-                }
-                else {
-                    ModelState.AddModelError("", "Password cannot be empty.");
-                }
-                if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password)) {
-                    IdentityResult result = await _userManager.UpdateAsync(user);
-                    if (result.Succeeded) {
-                        return RedirectToAction("Index");
-                    }
-                    AddErrors(result);
-                }
+        public async Task<IActionResult> EditAsync(EditUserViewModel userVm) {
+            if (!ModelState.IsValid) {
+                return View(userVm);
             }
-            else {
+            var user = await _userManager.FindByIdAsync(userVm.Id);
+            if (user == null) {
                 ModelState.AddModelError("", "User not found.");
+                return View(userVm);
             }
-            return View(user);
+            var passwordValidation = await _passwordValidator.ValidateAsync(_userManager, user, userVm.Password);
         }
 
         private void AddErrors(IdentityResult result) {
