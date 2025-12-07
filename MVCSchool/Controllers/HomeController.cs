@@ -1,24 +1,29 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MVCSchool.Models;
 
-namespace MVCSchool.Controllers
-{
-    public class HomeController : Controller
-    {
-        public IActionResult Index()
-        {
-            return View();
+namespace MVCSchool.Controllers {
+    public class HomeController : Controller {
+        private UserManager<AppUser> _userManager;
+
+        public HomeController(UserManager<AppUser> userManager) {
+            _userManager = userManager;
         }
 
-        public IActionResult Privacy()
-        {
+        [Authorize]
+        public async Task<IActionResult> IndexAsync() {
+            string message = "Hello";
+            return View("Index", message);
+        }
+
+        public IActionResult Privacy() {
             return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
+        public IActionResult Error() {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
