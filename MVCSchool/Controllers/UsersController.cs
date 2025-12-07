@@ -45,7 +45,7 @@ namespace MVCSchool.Controllers {
             if (userToEdit == null) {
                 return View("NotFound");
             }
-            var userToEditVM = new EditUserViewModel {
+            EditUserViewModel userToEditVM = new EditUserViewModel {
                 Id = userToEdit.Id,
                 Name = userToEdit.UserName!,
                 Email = userToEdit.Email!,
@@ -54,28 +54,28 @@ namespace MVCSchool.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditAsync(EditUserViewModel userVm) {
+        public async Task<IActionResult> EditAsync(EditUserViewModel user) {
             if (!ModelState.IsValid) {
-                return View(userVm);
+                return View(user);
             }
-            AppUser? user = await _userManager.FindByIdAsync(userVm.Id);
-            if (user == null) {
+            AppUser? appUser = await _userManager.FindByIdAsync(user.Id);
+            if (appUser == null) {
                 ModelState.AddModelError("", "User not found.");
-                return View(userVm);
+                return View(user);
             }
-            IdentityResult passwordValidation = await _passwordValidator.ValidateAsync(_userManager, user, userVm.Password);
+            IdentityResult passwordValidation = await _passwordValidator.ValidateAsync(_userManager, appUser, user.Password);
             if (!passwordValidation.Succeeded) {
                 AddErrors(passwordValidation);
-                return View(userVm);
+                return View(user);
             }
-            user.Email = userVm.Email;
-            user.PasswordHash = _passwordHasher.HashPassword(user, userVm.Password);
-            IdentityResult result = await _userManager.UpdateAsync(user);
+            appUser.Email = user.Email;
+            appUser.PasswordHash = _passwordHasher.HashPassword(appUser, user.Password);
+            IdentityResult result = await _userManager.UpdateAsync(appUser);
             if (result.Succeeded) {
                 return RedirectToAction("Index");
             }
             AddErrors(result);
-            return View(userVm);
+            return View(user);
         }
 
         [HttpPost]
