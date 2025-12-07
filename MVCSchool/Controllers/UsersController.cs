@@ -35,9 +35,7 @@ namespace MVCSchool.Controllers {
                 if (result.Succeeded) {
                     return RedirectToAction("Index");
                 }
-                foreach (IdentityError error in result.Errors) {
-                    ModelState.AddModelError("", error.Description);
-                }
+                AddErrors(result);
             }
             return View(user);
         }
@@ -60,24 +58,40 @@ namespace MVCSchool.Controllers {
             if (!ModelState.IsValid) {
                 return View(userVm);
             }
-            var user = await _userManager.FindByIdAsync(userVm.Id);
+            AppUser? user = await _userManager.FindByIdAsync(userVm.Id);
             if (user == null) {
                 ModelState.AddModelError("", "User not found.");
                 return View(userVm);
             }
-            var passwordValidation = await _passwordValidator.ValidateAsync(_userManager, user, userVm.Password);
+            IdentityResult passwordValidation = await _passwordValidator.ValidateAsync(_userManager, user, userVm.Password);
             if (!passwordValidation.Succeeded) {
                 AddErrors(passwordValidation);
                 return View(userVm);
             }
             user.Email = userVm.Email;
             user.PasswordHash = _passwordHasher.HashPassword(user, userVm.Password);
-            var result = await _userManager.UpdateAsync(user);
+            IdentityResult result = await _userManager.UpdateAsync(user);
             if (result.Succeeded) {
                 return RedirectToAction("Index");
             }
             AddErrors(result);
             return View(userVm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAsync(string id) {
+            AppUser? user = await _userManager.FindByIdAsync(id);
+            if (user != null) {
+                IdentityResult result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded) {
+                    return RedirectToAction("Index");
+                }
+                AddErrors(result);
+            }
+            else {
+                 ModelState.AddModelError("", "User not found.");
+            }
+            return View("Index", _userManager.Users);
         }
 
         private void AddErrors(IdentityResult result) {
