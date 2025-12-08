@@ -3,6 +3,7 @@
 @model IEnumerable<StudentDTO>
 
 <h1>List of all students</h1>
+<a class="btn btn-success" asp-action="Create">Create</a>
 @foreach (var item in Model) {
     <div class="border border-1 border-dark p-2">
         <h5>@item.FirstName @item.LastName</h5>
@@ -14,7 +15,3 @@
         </form>
     </div>
 }
-<hr />
-<div>
-    <a class="btn btn-success" asp-action="Create">Create</a>
-</div>

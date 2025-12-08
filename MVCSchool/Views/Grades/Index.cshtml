@@ -3,6 +3,7 @@
 @model IEnumerable<GradeDTO>
 
 <h1>List of all grades</h1>
+<a class="btn btn-success" asp-action="Create">Add a new grade</a>
 @foreach (var item in Model) {
     <div title="@item.Id" class="border border-1 border-dark p-2">
         <p>@item.StudentFullName</p>
@@ -16,7 +17,3 @@
         @* } *@
     </div>            
 }
-<hr />
-<div>
-    <a class="btn btn-success" asp-action="Create">Add a new grade</a>
-</div>

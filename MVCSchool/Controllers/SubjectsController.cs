@@ -15,9 +15,7 @@ namespace MVCSchool.Controllers {
             return View(allSubjects);
         }
 
-        public IActionResult Create() {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync(SubjectDTO newSubject) {
