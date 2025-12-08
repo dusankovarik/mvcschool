@@ -14,7 +14,11 @@ namespace MVCSchool.Controllers {
 
         [Authorize]
         public async Task<IActionResult> IndexAsync() {
-            string message = "Hello";
+            AppUser? user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user == null) {
+                return RedirectToAction("Login", "Account");
+            }
+            string message = $"Hello {user.UserName}!";
             return View("Index", message);
         }
 

@@ -40,5 +40,10 @@ namespace MVCSchool.Controllers {
             }
             return View(login);
         }
+
+        public async Task<IActionResult> LogoutAsync() {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
