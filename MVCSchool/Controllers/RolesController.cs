@@ -24,7 +24,23 @@ namespace MVCSchool.Controllers {
                 }
                 AddErrors(result);
             }
-            return View();
+            return View("Create", name);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAsync(string id) {
+            IdentityRole? role = await _roleManager.FindByIdAsync(id);
+            if (role != null) {
+                IdentityResult result = await _roleManager.DeleteAsync(role);
+                if (result.Succeeded) {
+                    return RedirectToAction("Index");
+                }
+                AddErrors(result);
+            }
+            else {
+                ModelState.AddModelError("", "Role not found.");
+            }
+            return View("Index", _roleManager.Roles);
         }
 
         private void AddErrors(IdentityResult result) {
