@@ -9,5 +9,7 @@ namespace MVCSchool.ViewModels {
         public string? Password { get; set; }
 
         public string? ReturnUrl { get; set; }
+
+        public bool Remember { get; set; }
     }
 }

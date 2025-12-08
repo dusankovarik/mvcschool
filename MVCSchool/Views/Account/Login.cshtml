@@ -20,5 +20,9 @@
         <input type="password" asp-for="Password" class="form-control" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
+    <div>
+        <input type="checkbox" asp-for="Remember" />
+        <label asp-for="Remember"></label>
+    </div>
     <button class="btn btn-primary" type="submit">Log In</button>
 </form>

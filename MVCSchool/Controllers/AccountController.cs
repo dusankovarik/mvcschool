@@ -31,7 +31,7 @@ namespace MVCSchool.Controllers {
                 if (appUser != null) {
                     await _signInManager.SignOutAsync();
                     Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(
-                        appUser, login.Password!, false, false);
+                        appUser, login.Password!, login.Remember, false);
                     if (result.Succeeded) {
                         return Redirect(login.ReturnUrl ?? "/");
                     }

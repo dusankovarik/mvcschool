@@ -24,6 +24,12 @@ builder.Services.Configure<IdentityOptions>(options => {
     options.Password.RequiredUniqueChars = 5;
 });
 
+builder.Services.ConfigureApplicationCookie(options => {
+    options.Cookie.Name = ".AspNetCore.Identity.Application";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    options.SlidingExpiration = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
