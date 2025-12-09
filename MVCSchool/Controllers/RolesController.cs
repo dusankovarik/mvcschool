@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
+using MVCSchool.Models;
 
 namespace MVCSchool.Controllers {
     public class RolesController : Controller {
         private RoleManager<IdentityRole> _roleManager;
+        private UserManager<AppUser> _userManager;
 
-        public RolesController(RoleManager<IdentityRole> roleManager) {
+        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager) {
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public IActionResult Index() {
@@ -41,6 +45,53 @@ namespace MVCSchool.Controllers {
                 ModelState.AddModelError("", "Role not found.");
             }
             return View("Index", _roleManager.Roles);
+        }
+
+        public async Task<IActionResult> EditAsync(string id) {
+            IdentityRole? role = await _roleManager.FindByIdAsync(id);
+            if (role == null) {
+                return View("NotFound");
+            }
+            List<AppUser> members = new List<AppUser>();
+            List<AppUser> nonMembers = new List<AppUser>();
+            foreach (AppUser user in _userManager.Users) {
+                var list = await _userManager.IsInRoleAsync(user, role.Name!) ? members : nonMembers;
+                list.Add(user);
+            }
+            return View(new RoleEdit {
+                Role = role,
+                Members = members,
+                NonMembers = nonMembers,
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditAsync(RoleModification model) {
+            IdentityResult result;
+            if (ModelState.IsValid) {
+                foreach (string userId in model.IdsToAdd ?? []) {
+                    AppUser? user = await _userManager.FindByIdAsync(userId);
+                    if (user != null) {
+                        result = await _userManager.AddToRoleAsync(user, model.RoleName);
+                        if (!result.Succeeded) {
+                            AddErrors(result);
+                        }
+                    }
+                }
+                foreach (string userId in model.IdsToDelete ?? []) {
+                    AppUser? user = await _userManager.FindByIdAsync(userId);
+                    if (user != null) {
+                        result = await _userManager.RemoveFromRoleAsync(user, model.RoleName);
+                        if (!result.Succeeded) {
+                            AddErrors(result);
+                        }
+                    }
+                }
+                if (ModelState.IsValid) {
+                    return RedirectToAction("Index");
+                }
+            }
+            return await EditAsync(model.RoleId);
         }
 
         private void AddErrors(IdentityResult result) {
