@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using MVCSchool.Models;
 
 namespace MVCSchool.Controllers {
+    [Authorize(Roles = "Admin")]
     public class RolesController : Controller {
         private RoleManager<IdentityRole> _roleManager;
         private UserManager<AppUser> _userManager;

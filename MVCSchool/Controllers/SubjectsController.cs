@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MVCSchool.DTO;
 using MVCSchool.Services;
 
 namespace MVCSchool.Controllers {
+    [Authorize(Roles = "Admin, Teacher")]
     public class SubjectsController : Controller {
         private SubjecstService _service;
 
