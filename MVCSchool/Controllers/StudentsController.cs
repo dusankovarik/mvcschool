@@ -48,5 +48,14 @@ namespace MVCSchool.Controllers {
             await _service.DeleteAsync(id);
             return RedirectToAction("Index");
         }
+
+        public IActionResult Search(string query) {
+            var foundStudents = _service.GetByName(query);
+            return View("Index", foundStudents);
+        }
+
+        public IActionResult CancelFilter() {
+            return RedirectToAction("Index");
+        }
     }
 }

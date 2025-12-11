@@ -43,6 +43,24 @@ namespace MVCSchool.Services {
             await _dbContext.SaveChangesAsync();
         }
 
+        public object GetByName(string query) {
+            string[] nameParts = query.Split(',');
+            List<Student> studentsThatMatch = new List<Student>();
+            List<StudentDTO> returnedStudents = new List<StudentDTO>();
+            if (nameParts.Length > 1) {
+                studentsThatMatch = _dbContext.Students.Where(st => st.LastName == nameParts[0].Trim())
+                    .Where(st => st.FirstName == nameParts[1].Trim()).ToList();
+            }
+            else {
+                studentsThatMatch = _dbContext.Students.Where(st => st.LastName == nameParts[0].Trim() ||
+                st.FirstName == nameParts[0].Trim()).ToList();
+            }
+            foreach (var student in studentsThatMatch) {
+                returnedStudents.Add(ModelToDto(student));
+            }
+            return returnedStudents;
+        }
+
         private StudentDTO ModelToDto(Student student) {
             return new StudentDTO {
                 Id = student.Id,
